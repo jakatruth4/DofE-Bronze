@@ -1,6 +1,8 @@
-# [Project Name] - Bronze DofE 6-Month Skills Project
+  # [Building claude code form scratch] - Bronze DofE 6-Month Skills Project
 
-A real-time browser-based **chess application with WebSockets, a custom Elo rating system, and custom game variants**, built over 6 months for my **Bronze Duke of Edinburgh's Award (Skills Section)** and tracked through regular Git commits across 26 weeks.
+An autonomous AI coding assistant built over 6 months for my **Bronze Duke of Edinburgh's Award (Skills Section)**, designed to inspect codebases, edit files, execute shell commands, and iterate through multi-step tasks using Large Language Models (LLMs).
+
+Progress is documented through regular Git commits across the 26-week period.
 
 ---
 
@@ -9,59 +11,64 @@ A real-time browser-based **chess application with WebSockets, a custom Elo rati
 * **Award Level:** Bronze
 * **Section:** Skills (6-month option)
 * **Timeframe:** [Start Date] - [End Date] (26 weeks, roughly 1 hour per week)
-* **Assessor:** [Assessor Name and Role]
+
 
 ### Project Aim
-To build a full-featured browser chess app with real-time WebSocket multiplayer, complete rule and draw-condition validation, a custom rating algorithm, and playable custom chess variants—refined through iterative testing over 6 months.
+To build a functional AI coding agent from scratch—covering REST API integration, structured tool calling, an autonomous think-act-observe loop, safe file and command execution, and advanced capabilities such as interactive mode, ACP support, and LSP integration.
 
 ---
 
-## Planned Features
+## Core Architecture and Agent Loop
 
-* [ ] Interactive board UI in HTML/CSS/JS with legal move highlights, promotion UI, move history, and clock display
-* [ ] Complete standard chess rules (castling, en passant, promotion, check/checkmate, stalemate, repetition, 50-move rule)
-* [ ] Real-time WebSocket multiplayer with room codes, turn sync, and disconnect/reconnect handling
-* [ ] Custom Elo rating system with persisted player ratings and rating-change history
-* [ ] At least two custom chess variants with distinct rule sets and win/visibility mechanics
-* [ ] Live deployment and refinements from playtesting with friends or an assessor
+At the center of the assistant is an iterative agent loop that lets the model reason about a task, call tools to gather context or modify code, inspect tool outputs, and repeat until the goal is achieved or a stopping condition is reached.
 
----
+1. **LLM REST API Integration:** Send structured prompts, conversation history, system instructions, and tool schemas to an LLM endpoint, handling responses and error states cleanly.
+2. **Tool Definitions and Execution:** Expose concrete capabilities to the model (such as reading files, writing or patching code, searching repositories, and running shell commands) with strict argument validation and permission checks.
+3. **Think - Act - Observe Loop:** Feed tool execution results back into the model's context so it can verify changes, catch errors from test or build commands, and self-correct across turns.
 
-## 6-Month Roadmap
-
-* **Month 1 - Board State and Core Rules:** Set up the repository, folder structure, UI board layout, piece movement, and legal move/check validation.
-* **Month 2 - Complete Chess Rules and Move UI:** Implement castling, en passant, promotion, draw detection, algebraic notation move list, and undo/reset/review controls.
-* **Month 3 - WebSockets and Real-Time Play:** Build the WebSocket server and client state sync, room/match flow, turn validation, and disconnect handling.
-* **Month 4 - Custom Elo Algorithm and Persistence:** Implement baseline Elo and your custom rating formula, track rating deltas per match, and persist profiles/match records.
-* **Month 5 - Custom Chess Variants:** Design, code, and test custom rule variants (such as Fog of War or piece drops/objective variants) alongside standard chess.
-* **Month 6 - Playtesting, Polish, and Wrap-Up:** Run multiplayer test sessions, fix edge-case bugs, polish UI/responsiveness, add screenshots to `/docs`, and complete assessor sign-off.
+For example, given an instruction like *"Refactor `main.py` to use a class"*, the agent can read the existing file, plan the structural change, apply the updated code, and run checks to verify the result.
 
 ---
 
-## Tech Stack
+## Planned Features and Roadmap
 
-* **Frontend:** HTML5, CSS3 (Grid/Flexbox, responsive board layout), JavaScript (ES6+ modules, WebSocket client)
-* **Realtime / Server:** Node.js, WebSockets (`ws` or Socket.io)
-* **Persistence and Version Control:** Git, GitHub, JSON / database or browser storage
+### Phase 1: Core Agent and Tooling
+* [ ] Connect to an LLM via a REST API with structured message and tool handling
+* [ ] Implement core filesystem and execution tools (file reading, file creation/editing, directory/code search, and command execution)
+* [ ] Build the core agent loop to think, execute tools, observe outputs, and iterate until completion
+* [ ] Add basic safeguards and confirmation prompts before destructive edits or commands
+
+### Phase 2: Context, Reliability, and Workflows
+* [ ] Manage context effectively across multi-turn sessions and larger codebases
+* [ ] Handle malformed tool calls, command failures, and edge cases without crashing the session
+* [ ] Support diff previews and clean inspection of proposed file changes
+
+### Phase 3: Advanced Capabilities
+* [ ] **Interactive Mode:** Persistent terminal/session interaction with ongoing state, commands, and live feedback
+* [ ] **ACP Support:** Implement Agent Client Protocol support for structured client-agent communication
+* [ ] **LSP Servers:** Integrate Language Server Protocol support for richer code intelligence, diagnostics, symbols, and navigation
+
+---
+
+## 6-Month Timeline
+
+* **Month 1 - Project Setup and REST API Client:** Initialize the repository, define project layout, and connect to an LLM REST API with basic prompt/response handling.
+* **Month 2 - Tool Calling and Agent Loop:** Define tool schemas, implement file and command tools, and build the iterative think-act-observe loop.
+* **Month 3 - File Editing, Diffs, and Safety:** Refine file modification workflows, error handling, and command execution guardrails.
+* **Month 4 - Interactive Mode:** Build a responsive interactive mode supporting multi-step tasks, session flow, and user feedback.
+* **Month 5 - ACP and LSP Integration:** Add ACP support and wire in LSP server capabilities for code diagnostics and context.
+* **Month 6 - Testing, Refinement, and Sign-Off:** Test across real coding tasks, fix edge cases, document findings in `/docs` and complete assessor review.
 
 ---
 
 ## Repository Structure
 
 ```text
-├── client/
-│   ├── index.html          # Main application page
-│   ├── css/
-│   │   └── styles.css      # Board, lobby, rating, and variant UI styles
-│   └── js/
-│       ├── main.js         # Client entry point and UI event handlers
-│       ├── board.js        # Board rendering, drag/click input, and highlights
-│       ├── socket.js       # WebSocket connection, reconnection, and message handling
-│       └── variant-ui.js   # Variant-specific rendering (e.g., fog of war or drop tray)
-├── server/
-│   ├── server.js         # WebSocket server, rooms, and session management
-│   ├── engine.js         # Move generation, legality checks, and game-end rules
-│   ├── elo.js            # Standard and custom Elo rating calculations
-│   └── variants.js       # Custom variant rules and state modifiers
-├── docs/                   # Screenshots, variant rule notes, and playtest logs
-└── README.md               # Project overview and setup guide
+├── src/
+│   ├── agent/          # Agent loop, prompt/message state, and orchestration
+│   ├── api/            # LLM REST API client and request/response handling
+│   ├── tools/          # File read/write/patch, search, and shell command tools
+│   ├── acp/            # Agent Client Protocol integration
+│   └── lsp/            # Language Server Protocol client and diagnostics
+├── docs/               # Notes, diagrams, and testing captures
+└── README.md           # Project overview, architecture, and setup guide
