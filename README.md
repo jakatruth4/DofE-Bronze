@@ -10,7 +10,7 @@ Progress is documented through regular Git commits across the 26-week period.
 
 * **Award Level:** Bronze
 * **Section:** Skills (6-month option)
-* **Timeframe:** [Start Date] - [End Date] (26 weeks, roughly 1 hour per week)
+* **Timeframe:** [24/11/26] - [24/5/27] (26 weeks, roughly 1 hour per week)
 
 
 ### Project Aim
