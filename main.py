@@ -7,6 +7,7 @@ load_dotenv()
 client = Groq(api_key=os.environ["GROQ_API_KEY"])
 
 MEMORY_FILE = "memory.json"
+MODEL = "openai/gpt-oss-20b"
 
 
 def load_memory():
@@ -21,17 +22,36 @@ def save_memory(memory):
         json.dump(memory, f, indent=2)
 
 
+def extract_facts(user_message, reply):
+    prompt = (
+        "From the exchange below, extract only durable facts worth remembering "
+        "long-term (names, preferences, project details). "
+        "Reply with a JSON object only, no other text. "
+        "If there is nothing worth remembering, reply with {}.\n\n"
+        f"User: {user_message}\nAssistant: {reply}"
+    )
+    response = client.chat.completions.create(
+        model=MODEL,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    text = response.choices[0].message.content.strip()
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        return {}
+
+
 memory = load_memory()
 
 while True:
     prompt = input(": ")
     response = client.chat.completions.create(
-        model="openai/gpt-oss-20b",
+        model=MODEL,
         messages=[{"role": "user", "content": f"memory (in JSON): {memory} user prompt: {prompt}"}],
     )
     reply = response.choices[0].message.content
     print(reply)
 
-    memory["last_prompt"] = prompt
-    memory["last_reply"] = reply
+    facts = extract_facts(prompt, reply)
+    memory.update(facts)
     save_memory(memory)
