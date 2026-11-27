@@ -1,4 +1,4 @@
-  # [Building claude code form scratch] - Bronze DofE 6-Month Skills Project
+  # [Building claude code from scratch] - Bronze DofE 6-Month Skills Project
 
 An autonomous AI coding assistant built over 6 months for my **Bronze Duke of Edinburgh's Award (Skills Section)**, designed to inspect codebases, edit files, execute shell commands, and iterate through multi-step tasks using Large Language Models (LLMs).
 
