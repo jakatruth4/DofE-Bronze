@@ -7,3 +7,4 @@ __pycache__/
 *.pyc
 
 memory.json
+src-tauri/target/
