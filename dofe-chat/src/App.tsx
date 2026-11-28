@@ -1,49 +1,47 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
 
-function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+type Message = { role: "user" | "bot"; text: string };
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
+function App() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState("");
+
+  function send() {
+    const text = input.trim();
+    if (!text) return;
+    setMessages([
+      ...messages,
+      { role: "user", text },
+      { role: "bot", text: "(fake reply)" },
+    ]);
+    setInput("");
   }
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
-
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <main className="chat">
+      <div className="messages">
+        {messages.map((m, i) => (
+          <p key={i} className={`message ${m.role}`}>
+            {m.text}
+          </p>
+        ))}
       </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
 
       <form
-        className="row"
+        className="input-bar"
         onSubmit={(e) => {
           e.preventDefault();
-          greet();
+          send();
         }}
       >
         <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
+          value={input}
+          onChange={(e) => setInput(e.currentTarget.value)}
+          placeholder="Type a message..."
         />
-        <button type="submit">Greet</button>
+        <button type="submit">Send</button>
       </form>
-      <p>{greetMsg}</p>
     </main>
   );
 }
